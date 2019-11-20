@@ -1,0 +1,21 @@
+library(dplyr)
+
+
+Diabetes_Data <- read.csv(file = 'diabetic_data.csv')
+
+Unique_Diabetes <- Diabetes_Data[!duplicated(Diabetes_Data$patient_nbr),]
+
+No_Death <- Unique_Diabetes[!(Unique_Diabetes$discharge_disposition_id==11 
+                               | Unique_Diabetes$discharge_disposition_id==12 
+                               | Unique_Diabetes$discharge_disposition_id==13 
+                               | Unique_Diabetes$discharge_disposition_id==14 
+                               | Unique_Diabetes$discharge_disposition_id==19 
+                               | Unique_Diabetes$discharge_disposition_id==20 
+                               | Unique_Diabetes$discharge_disposition_id==21),]
+
+Preprocess_Diabetes <- No_Death[!(No_Death$race == '?' | No_Death$diag_1 =='?' | No_Death$diag_2=='?' | No_Death$diag_3=='?' | No_Death$gender == 'Unkown/Invalid'),]
+
+LessV_Data <- subset(Preprocess_Diabetes, select = -c(encounter_id, patient_nbr, payer_code, medical_specialty))
+LessP_Data <- subset(LessV_Data, select = -c(examide, citoglipton,metformin.rosiglitazone, acetohexamide, tolbutamide, miglitol,
+                                             troglitazone, tolazamide, glipizide.metformin, glimepiride.pioglitazone, metformin.pioglitazone))
+
