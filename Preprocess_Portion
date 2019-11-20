@@ -19,3 +19,18 @@ LessV_Data <- subset(Preprocess_Diabetes, select = -c(encounter_id, patient_nbr,
 LessP_Data <- subset(LessV_Data, select = -c(examide, citoglipton,metformin.rosiglitazone, acetohexamide, tolbutamide, miglitol,
                                              troglitazone, tolazamide, glipizide.metformin, glimepiride.pioglitazone, metformin.pioglitazone))
 
+#Converting age intervals
+diabetes$age <- ifelse(diabetes$age == "[0-10)",  5, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[10-20)", 15, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[20-30)", 25, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[30-40)", 35, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[40-50)", 45, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[50-60)", 55, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[60-70)", 65, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[70-80)", 75, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[80-90)", 85, diabetes$age);
+diabetes$age <- ifelse(diabetes$age == "[90-100)", 95, diabetes$age);
+
+
+
+
