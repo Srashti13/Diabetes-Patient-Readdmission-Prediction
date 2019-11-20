@@ -31,6 +31,13 @@ diabetes$age <- ifelse(diabetes$age == "[70-80)", 75, diabetes$age);
 diabetes$age <- ifelse(diabetes$age == "[80-90)", 85, diabetes$age);
 diabetes$age <- ifelse(diabetes$age == "[90-100)", 95, diabetes$age);
 
+data.frame(sapply(diabetes,class))
+
+diabetes$admission_type_id <- as.factor(diabetes$admission_type_id)
+diabetes$admission_source_id <- as.factor(diabetes$admission_source_id)
+diabetes$discharge_disposition_id <- as.factor(diabetes$discharge_disposition_id)
+
+
 
 
 
