@@ -1,6 +1,6 @@
 library(dplyr)
 library(AppliedPredictiveModeling)
-library(forcats
+library(forcats)
 
 Diabetes_Data <- read.csv(file = 'diabetic_data.csv')
 
