@@ -67,6 +67,16 @@ levels(diabetes$admission_source_id)
 diabetes$readmitted <- fct_collapse(diabetes$readmitted, Readmitted = c(">30","<30"), "Not Readmitted" = c("NO"))
 levels(diabetes$readmitted)
 
+#Assigning the value "Not admitted" as 0 and "Admitted" as 1
+library(plyr)
+diabetes$readmitted <- revalue(diabetes$readmitted,
+                             c("Readmitted"="1", "Not Readmitted"="0"))
+
+#Converting into numeric datatype since we have to use different classification models that will support numeric datatype.
+diabetes$readmitted <- as.numeric(as.character(diabetes$readmitted))
+
+data.frame(sapply(diabetes,class))
+
 ### diagnosis columns
 #mapping for the levels were found in Strack et al..6
 
@@ -107,6 +117,17 @@ levels(diabetes$diag_3)[levels(diabetes$diag_3) %in% as.factor(c(580:629, 788))]
 levels(diabetes$diag_3)[levels(diabetes$diag_3) %in% as.factor(c(140:239))] <- "Neoplasms"
 levels(diabetes$diag_3)
 
-#Splitting the data into train and test set:
+#Removing the weight column
+diabetes_no_weight <- subset(diabetes, select = -c(weight))
 
+data.frame(sapply(diabetes_no_weight,class))
+
+#Splitting the data into train and test set:
+#Reference:https://topepo.github.io/caret/data-splitting.html
+
+library(caret)
+trainIndex <- createDataPartition(diabetes$readmitted, p = .7, list = FALSE)
+
+#Train <- data[ trainIndex,]
+#Test <- data[-trainIndex,]
 
