@@ -5,12 +5,27 @@
 library(dplyr)
 library(AppliedPredictiveModeling)
 library(forcats)
+library(dplyr)
+library(ggplot2)
 
-#reading the dataset 
+#Load  the dataset 
 Diabetes_Data <- read.csv(file = 'diabetic_data.csv')
 
-#removing the duplicate records:
+#Removing the duplicate records:
 Unique_Diabetes <- Diabetes_Data[!duplicated(Diabetes_Data$patient_nbr),]
+
+#Plot1:Histrigram for Number of Patients Hospitalizations:
+# (Need to add border,Change the scale of X)
+Diabetes %>%
+  group_by(patient_nbr) %>%
+  filter(n() > 2) %>%
+  count() %>%
+  ggplot(aes(x =n, group = 1)) + 
+  geom_histogram(binwidth = 1, fill = 'mediumpurple3') + 
+  labs(title = "Hospitalizations Patients with 3+ Visits", x = " Plot1:Number of  Hospitalizations", y = "Number of Patients") +
+  geom_text(binwidth = 1, stat = "bin", aes(y = ..count.., label = ifelse(..count.. / sum(..count..) < 0.01, NA, scales::percent(..count.. / sum(..count..)))), 
+            position = position_dodge(width = 1), vjust = -0.5, family = "DecimaMonoPro", size = 2)
+
 
 No_Death <- Unique_Diabetes[!(Unique_Diabetes$discharge_disposition_id==11 
                                | Unique_Diabetes$discharge_disposition_id==12 
@@ -20,7 +35,7 @@ No_Death <- Unique_Diabetes[!(Unique_Diabetes$discharge_disposition_id==11
                                | Unique_Diabetes$discharge_disposition_id==20 
                                | Unique_Diabetes$discharge_disposition_id==21),]
 
-#removed the missing values:
+#Removed the missing values:
 Preprocess_Diabetes <- No_Death[!(No_Death$race == '?' | No_Death$diag_1 =='?' | No_Death$diag_2=='?' | No_Death$diag_3=='?' | No_Death$gender == 'Unkown/Invalid'),]
 
 
@@ -64,7 +79,7 @@ diabetes$admission_source_id <- fct_collapse(diabetes$admission_source_id, "Emer
 levels(diabetes$admission_source_id)
 
 #Dividing the target variable into two set:
-diabetes$readmitted <- fct_collapse(diabetes$readmitted, Readmitted = c(">30","<30"), "Not Readmitted" = c("NO"))
+diabetes$readmitted <- fct_collapse(diabetes$readmitted, "Readmitted" = c(">30","<30"), "Not Readmitted" = c("NO"))
 levels(diabetes$readmitted)
 
 #Assigning the value "Not admitted" as 0 and "Admitted" as 1
@@ -121,6 +136,18 @@ levels(diabetes$diag_3)
 diabetes_no_weight <- subset(diabetes, select = -c(weight))
 
 data.frame(sapply(diabetes_no_weight,class))
+
+
+#Data Summaries((Visualization)
+#Plot2:Age Distribution 
+plot(Diabetes$age, main = " Plot 2:Age Distribution") 
+
+#Plot3:  Gender Distribution
+plot(Diabetes$gender, main = "Plot 3:Gender Distribution") 
+
+# Plot4: Readmission 
+ggplot(Diabetes,aes(x=number_inpatient,fill=readmitted)) + geom_bar()
+
 
 #Splitting the data into train and test set:
 #Reference:https://topepo.github.io/caret/data-splitting.html
