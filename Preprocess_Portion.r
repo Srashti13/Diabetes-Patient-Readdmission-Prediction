@@ -57,7 +57,7 @@ diabetes$age <- ifelse(diabetes$age == "[80-90)", 85, diabetes$age);
 diabetes$age <- ifelse(diabetes$age == "[90-100)", 95, diabetes$age);
 
 #checking the datatype of each column
-data.frame(sapply(diabetes,class))
+#data.frame(sapply(diabetes,class))
 
 #Converting into the factor datatype:
 diabetes$admission_type_id <- as.factor(diabetes$admission_type_id)
@@ -135,8 +135,18 @@ levels(diabetes$diag_3)
 #Removing the weight column
 diabetes_no_weight <- subset(diabetes, select = -c(weight))
 
-data.frame(sapply(diabetes_no_weight,class))
+#data.frame(sapply(diabetes_no_weight,class))
 
+#Splitting the data into train and test set:
+train_index <- sample(1:nrow(diabetes_no_weight), 0.8 * nrow(diabetes_no_weight))
+test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
+
+# Build X_train, y_train, X_test, y_test
+X_train <- diabetes_no_weight[train_index, -34]
+y_train <- diabetes_no_weight[train_index, "Readmitted"]
+
+X_test <- diabetes_no_weight[test_index, -34]
+y_test <- diabetes_no_weight[test_index, "Readmitted"]
 
 #Data Summaries((Visualization)
 #Plot2:Age Distribution 
@@ -149,12 +159,7 @@ plot(Diabetes$gender, main = "Plot 3:Gender Distribution")
 ggplot(Diabetes,aes(x=number_inpatient,fill=readmitted)) + geom_bar()
 
 
-#Splitting the data into train and test set:
-#Reference:https://topepo.github.io/caret/data-splitting.html
 
-library(caret)
-trainIndex <- createDataPartition(diabetes$readmitted, p = .7, list = FALSE)
 
-#Train <- data[ trainIndex,]
-#Test <- data[-trainIndex,]
+
 
