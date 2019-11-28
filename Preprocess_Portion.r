@@ -138,7 +138,7 @@ diabetes_no_weight <- subset(diabetes, select = -c(weight))
 #data.frame(sapply(diabetes_no_weight,class))
 
 #Splitting the data into train and test set:
-train_index <- sample(1:nrow(diabetes_no_weight), 0.8 * nrow(diabetes_no_weight))
+train_index <- sample(1:nrow(diabetes_no_weight), 0.7 * nrow(diabetes_no_weight))
 test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
 
 # Build X_train, y_train, X_test, y_test
