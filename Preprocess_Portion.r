@@ -143,10 +143,35 @@ test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
 
 # Build X_train, y_train, X_test, y_test
 X_train <- diabetes_no_weight[train_index, -34]
-y_train <- diabetes_no_weight[train_index, "Readmitted"]
+y_train <- diabetes_no_weight[train_index, "readmitted"]
+
+#Combined 70% training data
+train_df <- diabetes_no_weight[train_index,]
 
 X_test <- diabetes_no_weight[test_index, -34]
-y_test <- diabetes_no_weight[test_index, "Readmitted"]
+y_test <- diabetes_no_weight[test_index, "readmitted"]
+
+# 30 % Test set 
+test_df <- diabetes_no_weight[test_index,]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Data Summaries((Visualization)
 #Plot2:Age Distribution 
