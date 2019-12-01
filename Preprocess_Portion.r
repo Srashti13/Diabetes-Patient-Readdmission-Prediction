@@ -144,14 +144,14 @@ train_index <- sample(1:nrow(diabetes_no_weight), 0.7 * nrow(diabetes_no_weight)
 test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
 
 # Build X_train, y_train, X_test, y_test
-#X_train <- diabetes_no_weight[train_index, -33]
-#y_train <- diabetes_no_weight[train_index, "readmitted"]
+X_train <- diabetes_no_weight[train_index, -34]
+y_train <- diabetes_no_weight[train_index, "readmitted"]
 
 #Combined 70% training data
 train_df <- diabetes_no_weight[train_index,]
 
-#X_test <- diabetes_no_weight[test_index, -33]
-#y_test <- diabetes_no_weight[test_index, "readmitted"]
+X_test <- diabetes_no_weight[test_index, -34]
+y_test <- diabetes_no_weight[test_index, "readmitted"]
 
 # 30 % Test set 
 test_df <- diabetes_no_weight[test_index,]
@@ -159,6 +159,32 @@ test_df <- diabetes_no_weight[test_index,]
 
 
 
+#1. Random Forest Model  
+library(randomForest)
+library(caret)
+
+rForest <- randomForest(readmitted~., data=train_df, mtry=3, ntree = 500,
+                        nodesize = 5, importance = TRUE)
+
+#check the OOB mse and r^2
+rForest 
+
+#plots OOB mse vs # trees
+plot(rForest, main = "Random Forest Model") 
+
+#checking Important variables
+importance(rForest); varImpPlot(rForest, sort = TRUE, main = "Random Forest Model")
+
+#For predicting test data
+rf_yHat = predict(rForest, X_test)
+head(rf_yHat)
+
+# performance evaluation
+rfPR = postResample(pred=rf_yHat, obs=y_test)
+rfPR
+
+#predict Vs Observed Random Forest
+plot(rf_yHat, y_test, main="Observed Vs Predicted", xlab= "Predicted ", ylab= "Observed ",pch=19)
 
 
 
