@@ -14,7 +14,7 @@ Diabetes_Data <- read.csv(file = 'diabetic_data.csv')
 #Removing the duplicate records:
 Unique_Diabetes <- Diabetes_Data[!duplicated(Diabetes_Data$patient_nbr),]
 
-#Plot1:Histrigram for Number of Patients Hospitalizations:
+#Plot1:Histogram for Number of Patients Hospitalizations:
 # (Need to add border,Change the scale of X)
 Diabetes %>%
   group_by(patient_nbr) %>%
@@ -39,8 +39,10 @@ No_Death <- Unique_Diabetes[!(Unique_Diabetes$discharge_disposition_id==11
 Preprocess_Diabetes <- No_Death[!(No_Death$race == '?' | No_Death$diag_1 =='?' | No_Death$diag_2=='?' | No_Death$diag_3=='?' | No_Death$gender == 'Unkown/Invalid'),]
 
 
-#Removed the unwanted columns for the prediction:
+#Removed the unwanted columns and the colums with highest missing values for the prediction:
 LessV_Data <- subset(Preprocess_Diabetes, select = -c(encounter_id, patient_nbr, payer_code, medical_specialty))
+
+#Removed 11 categorical predictors because they had primarily (almost) only one factor level and would not have a significant influence on the response.
 diabetes <- subset(LessV_Data, select = -c(examide, citoglipton,metformin.rosiglitazone, acetohexamide, tolbutamide, miglitol,
                                              troglitazone, tolazamide, glipizide.metformin, glimepiride.pioglitazone, metformin.pioglitazone))
 
@@ -142,17 +144,18 @@ train_index <- sample(1:nrow(diabetes_no_weight), 0.7 * nrow(diabetes_no_weight)
 test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
 
 # Build X_train, y_train, X_test, y_test
-X_train <- diabetes_no_weight[train_index, -34]
-y_train <- diabetes_no_weight[train_index, "readmitted"]
+#X_train <- diabetes_no_weight[train_index, -33]
+#y_train <- diabetes_no_weight[train_index, "readmitted"]
 
 #Combined 70% training data
 train_df <- diabetes_no_weight[train_index,]
 
-X_test <- diabetes_no_weight[test_index, -34]
-y_test <- diabetes_no_weight[test_index, "readmitted"]
+#X_test <- diabetes_no_weight[test_index, -33]
+#y_test <- diabetes_no_weight[test_index, "readmitted"]
 
 # 30 % Test set 
 test_df <- diabetes_no_weight[test_index,]
+
 
 
 
