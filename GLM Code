@@ -1,0 +1,20 @@
+#This code goes after the Preprocessing Code in th eMaster Branch
+
+# Model : Generalized Logistic Regression
+GLM_Model <- glm(readmitted~., data=train_df, family=binomial(link='logit'))
+GLM_Model_Prediction <- predict(GLM_Model,test_df, type = "response")
+plot(GLM_Model)
+summary(GLM_Model)
+
+#GLM ROC
+GLM_ROC <- roc(test_df$readmitted, GLM_Model_Prediction)
+GLM_ROC
+
+# Accuracy of Model
+GLM_Pred <- ifelse(GLM_Model_Prediction > 0.5, 1, 0)
+pred2 <- ifelse(GLM_Pred == 1, "TRUE", "FALSE")
+table(pred2)["TRUE"]
+GLM_Accuracy <- ifelse(GLM_Pred == test_df$readmitted,1,0)
+table(GLM_Accuracy)
+Accuracy_GLM <- (sum(GLM_Accuracy)/count(test_df))*100
+Accuracy_GLM
