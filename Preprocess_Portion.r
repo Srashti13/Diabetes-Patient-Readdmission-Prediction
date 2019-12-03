@@ -223,7 +223,23 @@ Accuracy_GLM
 
 
 
+#3:Support Vector Machine (SVM)
 
+library(e1071)
+library(caret)
+library(ROCR)
+library(gplots)
+library(kernlab)
+
+Set.seed(12)
+
+SVM_Model3 <- svm(readmitted~., data = train_df, kernel = "linear",
+                 type = "C-classification", cross = 10, cost = 0.01, gamma = 1000)
+
+# SVM Predication 
+SVM_Model_Prediction <- predict(SVM_Model3, test_df)
+# Summary for SVM Model
+summary(SVM_Model3)# Accuracy: 60.90%
 
 
 
