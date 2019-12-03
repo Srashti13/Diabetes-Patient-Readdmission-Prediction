@@ -221,6 +221,9 @@ table(GLM_Accuracy)
 Accuracy_GLM <- (sum(GLM_Accuracy)/count(test_df))*100
 Accuracy_GLM
 
+#confusion matrix
+confusionMatrix(as.factor(GLM_Pred),as.factor(test_df$readmitted), positive = "1")
+
 
 
 #3:Support Vector Machine (SVM)
