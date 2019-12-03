@@ -189,6 +189,39 @@ plot(rf_yHat, y_test, main="Observed Vs Predicted", xlab= "Predicted ", ylab= "O
 
 
 
+#2: Generalized Logistic Regression
+
+#GlM Model
+GLM_Model <- glm(readmitted~., data=train_df, family=binomial(link='logit'))
+
+#Checking Information
+summary(GLM_Model)
+
+#For prediction
+GLM_Model_Prediction <- predict(GLM_Model,test_df, type = "response")
+plot(GLM_Model)
+
+#GLM ROC
+GLM_ROC <- roc(test_df$readmitted, GLM_Model_Prediction)
+GLM_ROC
+
+# Accuracy of Model
+GLM_Pred <- ifelse(GLM_Model_Prediction > 0.5, 1, 0)
+pred2 <- ifelse(GLM_Pred == 1, "TRUE", "FALSE")
+#Number True and Number False
+table(pred2)["TRUE"]
+
+#Accuracy Equation
+GLM_Accuracy <- ifelse(GLM_Pred == test_df$readmitted,1,0)
+
+#table for accuracy
+table(GLM_Accuracy)
+
+#Calculating True vs. total
+Accuracy_GLM <- (sum(GLM_Accuracy)/count(test_df))*100
+Accuracy_GLM
+
+
 
 
 
