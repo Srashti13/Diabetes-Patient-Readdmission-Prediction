@@ -1,0 +1,118 @@
+########################################################################
+##                        Neural Network Model                        ##
+########################################################################
+
+
+############ CLASSIFICATION PURPOSES
+diabetes_no_weight$readmitted <- as.factor(as.character(diabetes_no_weight$readmitted))
+#########################
+
+#Splitting the data into train and test set:
+train_index <- sample(1:nrow(diabetes_no_weight), 0.7 * nrow(diabetes_no_weight))
+test_index <- setdiff(1:nrow(diabetes_no_weight), train_index)
+
+#Combined 70% training data
+train_df <- diabetes_no_weight[train_index,]
+
+# 30 % Test set 
+test_df <- diabetes_no_weight[test_index,]
+
+##############################
+
+#install.packages("quantmod")
+library(nnet)       
+library(caret)
+library(quantmod)
+head(train_df)
+str(train_df)
+
+##################### NNET MODEL #################################
+model <- train(readmitted ~ . , train_df, method='nnet', linout=TRUE, trace = FALSE,
+               #Grid of tuning parameters to try:
+               tuneGrid=NULL ) 
+summary(model)
+############### Without Cross Validation
+
+pred <- predict(model, test_df)
+predNew = as.data.frame(pred)
+categorise=function(x){
+  return(ifelse(x>0.5,1,0))
+}
+predNew=apply(predNew,2,categorise)
+head(predNew,10)
+confusionMatrix(as.factor(test_df$readmitted),as.factor(predNew))
+
+############### WITH CROSS VALIDATION
+train_control <- trainControl(method = "cv", number = 10)
+linearCrossMod <- train(readmitted ~ ., 
+                        data=train_df, 
+                        trControl = train_control,
+                        method = "nnet",
+                        family=binomial())
+
+summary(linearCrossMod)
+
+pred_cv <- predict(linearCrossMod, test_df)
+predNew_cv = as.data.frame(pred_cv)
+predNew_cv=apply(predNew_cv,2,categorise)
+head(predNew_cv,10)
+confusionMatrix(as.factor(predNew_cv),as.factor(test_df$readmitted))
+
+############### Roc curve for NNET MODEL
+library(ROCR)
+
+pred_roc <- prediction(as.numeric(as.character(pred_cv)), as.numeric(as.character(test_df$readmitted)))
+perf <- performance(pred_roc, "tpr", 'fpr')
+plot(perf, main = "ROC curve for Neural Net", colorize = T)
+abline(0,1, col='gray60')
+
+auc_ROCR <- performance(pred_roc, measure = "auc")
+auc_ROCR <- auc_ROCR@y.values[[1]]
+
+auc_ROCR
+
+########################## avNNet MODEL ###################################
+model_av <- train(readmitted ~ . , train_df, method='avNNet', linout=TRUE, trace = FALSE,
+                  #Grid of tuning parameters to try:
+                  tuneGrid=NULL ) 
+summary(model_av)
+
+################ Without Cross Validation
+
+pred_av <- predict(model_av, test_df)
+predNew_av = as.data.frame(pred_av)
+
+predNew_av=apply(predNew_av,2,categorise)
+head(predNew_av,10)
+confusionMatrix(as.factor(test_df$readmitted),as.factor(predNew_av))
+
+################ WITH CROSS VALIDATION
+
+linearCrossMod_av <- train(readmitted ~ ., 
+                        data=train_df, 
+                        trControl = train_control,
+                        method = "avNNet",
+                        family=binomial())
+
+summary(linearCrossMod_av)
+
+pred_cv_av <- predict(linearCrossMod_av, test_df)
+predNew_cv_av = as.data.frame(pred_cv_av)
+predNew_cv_av=apply(predNew_cv_av,2,categorise)
+head(predNew_cv_av,10)
+confusionMatrix(as.factor(predNew_cv_av),as.factor(test_df$readmitted))
+
+################ Roc curve for Neural Network
+library(ROCR)
+
+pred_roc_av <- prediction(as.numeric(as.character(pred_cv_av)), as.numeric(as.character(test_df$readmitted)))
+perf_av <- performance(pred_roc_av, "tpr", 'fpr')
+plot(perf_av, main = "ROC curve for Neural Net", colorize = T)
+abline(0,1, col='gray60')
+
+auc_ROCR_av <- performance(pred_roc_av, measure = "auc")
+auc_ROCR_av <- auc_ROCR_av@y.values[[1]]
+
+auc_ROCR_av
+
+##################### END of Neural Network #####################
