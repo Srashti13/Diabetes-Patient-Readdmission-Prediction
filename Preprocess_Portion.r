@@ -269,6 +269,54 @@ aucro
 
 
 
+#5 Boosted Models
+
+library(caret)
+library(corrplot)			# plot correlations
+library(doParallel)		# parallel processing
+library(dplyr)        # Used by caret
+library(gbm)				  # GBM Models
+library(pROC)				  # plot the ROC curve
+library(xgboost)
+library(plyr)
+
+train_df$readmitted <- revalue(train_df$readmitted, c("Readmitted"="Yes", "Not Readmitted"="No"))
+ctrl <- trainControl(method = "repeatedcv",   # 10fold cross validation
+                     number = 5,							# do 5 repititions of cv
+                     summaryFunction=twoClassSummary,	# Use AUC to pick the best model
+                     classProbs=TRUE,
+                     allowParallel = TRUE)
+
+grid <- expand.grid(interaction.depth=c(1,2), # Depth of variable interactions
+                    n.trees=c(100,1000),	        # Num trees to fit
+                    shrinkage=c(0.01,0.2),		# Try 2 values for learning rate 
+                    n.minobsinnode = 20)
+
+gbmFit<- train(readmitted~., data = train_df,
+               method = "gbm",
+               tuneGrid = grid,
+               metric = "ROC",
+               verbose = FALSE,
+               trControl = ctrl)
+
+
+gbmPred <- predict(gbmFit,type = "raw")
+head(gbmPred)
+
+confusionMatrix(train_df$readmitted,gbmPred)
+
+library(ROCR)
+gbmPred <- predict(gbmFit, test_df)
+pred <- prediction(as.numeric(gbmPred), as.numeric(y_test))
+perf <- performance(pred, "tpr", 'fpr')
+plot(perf, main = "ROC curve", colorize = T)
+abline(0,1, col='gray60')
+
+auc_ROCR <- performance(pred, measure = "auc")
+auc_ROCR <- auc_ROCR@y.values[[1]]
+auc_ROCR
+
+
 
 
 
