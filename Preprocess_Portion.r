@@ -241,8 +241,16 @@ SVM_Model3 <- svm(readmitted~., data = train_df, kernel = "linear",
 
 # SVM Predication 
 SVM_Model_Prediction <- predict(SVM_Model3, test_df)
-# Summary for SVM Model
-summary(SVM_Model3)# Accuracy: 60.90%
+
+# Summary for SVM Model and Confusion Matrix 
+summary(SVM_Model3)# Accuracy: 61%
+
+## ROC 
+
+SVM_ROC2 <-roc(response=test_df$readmitted, predictor= factor(SVM_Model_Prediction,ordered = TRUE), plot=TRUE) 
+                                                        
+SVM_ROC2
+
 
 
 #4 Classification Tree
