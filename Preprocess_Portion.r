@@ -201,10 +201,6 @@ summary(GLM_Model)
 GLM_Model_Prediction <- predict(GLM_Model,test_df, type = "response")
 plot(GLM_Model)
 
-#GLM ROC
-GLM_ROC <- roc(test_df$readmitted, GLM_Model_Prediction)
-GLM_ROC
-
 # Accuracy of Model
 GLM_Pred <- ifelse(GLM_Model_Prediction > 0.5, 1, 0)
 pred2 <- ifelse(GLM_Pred == 1, "TRUE", "FALSE")
@@ -224,7 +220,18 @@ Accuracy_GLM
 #confusion matrix
 confusionMatrix(as.factor(GLM_Pred),as.factor(test_df$readmitted), positive = "1")
 
+#ROC curve for GLM
+library(ROCR)
+pred_glm <- prediction(as.numeric(as.character(GLM_Model_Prediction)), as.numeric(as.character(test_df$readmitted)))
+perf_glm <- performance(pred_glm, "tpr", 'fpr')
+plot(perf_glm, main = "ROC curve", colorize = T)
+abline(0,1, col='gray60')
 
+summary(perf_glm)
+
+auc_ROCR <- performance(pred_glm, measure = "auc")
+auc_ROCR <- auc_ROCR@y.values[[1]]
+auc_ROCR
 
 #3:Support Vector Machine (SVM)
 
