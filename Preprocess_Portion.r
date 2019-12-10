@@ -273,9 +273,9 @@ datpr <- prune(dat, cp=0.00036)
 plotcp(datpr)
 summary(datpr)
 
-pred = predict(datpr, type = "class")
+pred = predict(datpr, test_df, type = "class")
 
-confusionMatrix(table(test_df$readmitted, pred))
+confusionMatrix(as.factor(test_df$readmitted), pred)
 
 varImp(datpr)
 
