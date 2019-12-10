@@ -279,6 +279,11 @@ confusionMatrix(as.factor(test_df$readmitted), pred)
 
 varImp(datpr)
 
+pred_ct <- prediction(as.numeric(as.character(pred)), as.numeric(as.character(test_df$readmitted)))
+perf_ct <- performance(pred_ct, "tpr", 'fpr')
+plot(perf_ct, main = "ROC curve", colorize = T)
+abline(0,1, col='gray60')
+
 #5 Boosted Models
 
 library(caret)
