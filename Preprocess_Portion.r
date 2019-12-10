@@ -278,6 +278,7 @@ pred = predict(datpr, type = "class")
 
 confusionMatrix(table(train_df$readmitted, pred))
 
+varImp(datpr)
 
 #5 Boosted Models
 
