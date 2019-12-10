@@ -274,7 +274,7 @@ plotcp(datpr)
 
 pred = predict(datpr, type = "class")
 
-confusionMatrix(table(train_df$readmitted, pred))
+confusionMatrix(table(test_df$readmitted, pred))
 
 varImp(datpr)
 
