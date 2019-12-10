@@ -271,6 +271,7 @@ plotcp(dat)
 printcp(dat)
 datpr <- prune(dat, cp=0.00036)
 plotcp(datpr)
+summary(datpr)
 
 pred = predict(datpr, type = "class")
 
