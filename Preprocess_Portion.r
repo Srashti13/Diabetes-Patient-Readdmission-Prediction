@@ -264,8 +264,6 @@ SVM_ROC2
 library(pROC)
 library(rpart)
 library(ROCR)
-library(ROCR)
-library(gplots)
 control <- rpart.control(minbucket=10, cp = 0.0001,maxsurrogate = 0, usesurrogate = 0, xval=10)
 
 dat <- rpart(readmitted~., train_df, method = "class", control = control)
