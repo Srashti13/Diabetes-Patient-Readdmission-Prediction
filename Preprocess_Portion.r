@@ -284,6 +284,11 @@ perf_ct <- performance(pred_ct, "tpr", 'fpr')
 plot(perf_ct, main = "ROC curve", colorize = T)
 abline(0,1, col='gray60')
 
+auc_ROCR <- performance(pred_ct, measure = "auc")
+auc_ROCR <- auc_ROCR@y.values[[1]]
+auc_ROCR
+
+
 #5 Boosted Models
 
 library(caret)
