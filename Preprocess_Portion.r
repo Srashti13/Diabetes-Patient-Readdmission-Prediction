@@ -261,19 +261,22 @@ SVM_ROC2
 
 
 #4 Classification Tree
+library(pROC)
 library(rpart)
-control <- rpart.control(minbucket=10, cp = 0.0001, maxsurrogate = 0, usesurrogate = 0, xval=10)
+library(ROCR)
+library(ROCR)
+library(gplots)
+control <- rpart.control(minbucket=10, cp = 0.0001,maxsurrogate = 0, usesurrogate = 0, xval=10)
+
 dat <- rpart(readmitted~., train_df, method = "class", control = control)
 plotcp(dat)
 printcp(dat)
-
 datpr <- prune(dat, cp=0.00036)
 plotcp(datpr)
 
-aucroc <- performance(pred, measure = "auc")
-aucro <- aucroc@y.values[[1]]
-aucro
+pred = predict(datpr, type = "class")
 
+confusionMatrix(table(train_df$readmitted, pred))
 
 
 #5 Boosted Models
